@@ -1,7 +1,7 @@
 <?php
 
 
-class ApiConnect
+class Api
 {
     private $url;
     private $rapidapi_host;
