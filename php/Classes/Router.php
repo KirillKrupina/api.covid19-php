@@ -9,7 +9,7 @@ class Router
     function __construct($routesPath)
     {
         // Получаем конфигурацию из файла.
-        $this->routes = include($routesPath);
+       $this->routes = include($routesPath);
     }
 
     // Метод получает URI. Несколько вариантов представлены для надёжности.
@@ -61,7 +61,7 @@ class Router
 
                 // Подключаем файл контроллера, если он имеется
                 // file_exists — Проверяет существование указанного файла или каталога
-                $controllerFile = ROOT . '../app/Сontrollers/' . $controller . '.php';
+                $controllerFile = ROOT . '../Controllers' . $controller . '.php';
                 if (file_exists($controllerFile)) {
                     include($controllerFile);
                 }

@@ -54,11 +54,16 @@
 
 // подключаем необходимые файлы
 define('ROOT', dirname(__DIR__));
-require_once(ROOT.'/Classes/Router.php');
+require_once(ROOT.'/php/Classes/Router.php');
+
 
 // подключаем конфигурацию URL
-$routes=ROOT.'routes.php';
+$routes = include(dirname(__FILE__).'/routes.php');
 
 // запускаем роутер
 $router = new Router($routes);
+
+
+print_r($router);
 $router->run();
+
