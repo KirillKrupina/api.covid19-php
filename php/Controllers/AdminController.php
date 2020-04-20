@@ -1,11 +1,12 @@
 <?php
 
+require_once APP_DIR . '/Models/Api.php';
+
 class AdminController
 {
     private $apiUrl = 'https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats';
     private $rapidapi_host = 'x-rapidapi-host: covid-19-coronavirus-statistics.p.rapidapi.com';
     private $rapidapi_key = 'x-rapidapi-key: 42f866a9bamsh624642e94bc9f48p155f6ejsn5686cb413636';
-    private $pdo;
 
     public function connectToApi()
     {
@@ -16,10 +17,9 @@ class AdminController
     }
 
 
-
     public function connectToDb()
     {
-         //mysqli_connect('127.0.0.1', 'root', '', 'covid19db');
+        //mysqli_connect('127.0.0.1', 'root', '', 'covid19db');
         return new PDO('mysql:host=127.0.0.1;dbname=covid19db', 'root', '');
     }
 
@@ -52,49 +52,71 @@ class AdminController
         }
     }
 
-    public function importAll()
+    public function getStats()
     {
-        $this->setDataToDB();
+
+//        $this->setDataToDB();
 
         try {
             $sql_get_all_data = "SELECT city, province, country, last_update, confirmed, deaths, recovered FROM country_stats";
             $result = $this->connectToDb()->query($sql_get_all_data);
+            $json_array = array();
+
+            $cnr = 0;
+            if (!isset($result)) {
+                echo 'Result is undefined';
+            }
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                $json_array[] = $row;
+                ++$cnr;
+            }
+            echo json_encode(array(
+                'success' => true,
+                'rows' => $json_array,
+                'count' => $cnr
+            ));
+//            $json_string = json_encode($json_array);
+//            echo $json_string;
+//
+//            if (isset($json_string)) {
+//                return $json_string;
+//            }
         } catch (Exception $e) {
-            echo $e;
+            // echo $e;
+            echo json_encode(array(
+                'success' => false,
+                'message' => $e->getMessage()
+            ));
         }
-
-        $json_array = array();
-
-        if (!isset($result)) {
-            echo 'Result is undefined';
-        }
-
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            $json_array[] = $row;
-        }
-        $json_string = json_encode($json_array);
 
     }
-    
+
     public function importCountries()
     {
         try {
             $sql_get_countries = "SELECT country FROM country_stats GROUP BY country";
             $result = $this->connectToDb()->query($sql_get_countries);
+            if (!isset($result)) {
+                echo 'Result is undefined';
+            }
+
+            $json_array = array();
+
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                $json_array[] = $row;
+            }
+            $json_string = json_encode($json_array);
+
+            if (isset($json_string)) {
+                return $json_string;
+            }
         } catch (Exception $e) {
             echo $e;
         }
-        if (!isset($result)) {
-            echo 'Result is undefined';
-        }
-
-        $json_array = array();
-
-        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
-            $json_array[] = $row;
-        }
-        $json_string = json_encode($json_array);
 
     }
+
+
+
 
 }

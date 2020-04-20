@@ -2,9 +2,7 @@
 
 //include('Api.php');
 //
-//header("Access-Control-Allow-Origin: *");
-//header("Access-Control-Allow-Headers: *");
-//header("Content-Type: application/json; charset=UTF-8");
+
 //
 //$api = new Api("https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/stats", "x-rapidapi-host: covid-19-coronavirus-statistics.p.rapidapi.com", "x-rapidapi-key: 42f866a9bamsh624642e94bc9f48p155f6ejsn5686cb413636");
 //$api->connectToApi();
@@ -51,19 +49,24 @@
 //$json_string = json_encode($json_array);
 //echo $json_string;
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
+header("Content-Type: application/json; charset=UTF-8");
+
+define('APP_DIR', __DIR__);
 
 // подключаем необходимые файлы
-define('ROOT', dirname(__DIR__));
-require_once(ROOT.'/php/Classes/Router.php');
-
+require_once 'Classes/Router.php';
 
 // подключаем конфигурацию URL
-$routes = include(dirname(__FILE__).'/routes.php');
+$routes = include(dirname(__FILE__) . '/routes.php');
 
 // запускаем роутер
 $router = new Router($routes);
 
-
-print_r($router);
-$router->run();
+try {
+    $router->run();
+} catch (Exception $e) {
+    echo 'Error: #' . $e;
+}
 
